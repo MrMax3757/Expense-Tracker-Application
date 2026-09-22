@@ -8,6 +8,15 @@ The app you can run here is the browser build in [`web/`](web/). Open `web/index
 python3 -m http.server 4173 --bind 0.0.0.0 --directory web
 ```
 
+## Install on a phone
+
+This is not a Play Store or App Store package. Flutter could not be built here, so the installable app is the same offline browser build, added to the home screen.
+
+1. On the phone, open the published Daybook page in Chrome (Android) or Safari (iPhone).
+2. Android: tap **Install on this phone** if it appears, or open the browser menu and choose **Install app** or **Add to Home screen**.
+3. iPhone: tap **Share**, then **Add to Home Screen**.
+4. Open Daybook from the new icon. The ledger stays on that phone. It is not uploaded.
+
 `docs/review/` is an earlier shell study. It is not this app.
 
 ## What this build does

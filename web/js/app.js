@@ -477,6 +477,16 @@ function about() {
     <p class="footnote">The books stay in this browser unless you export a file yourself.</p>`;
 }
 
+function installedApp() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function installCard() {
+  if (installedApp()) return `<p class="footnote">Daybook is on this home screen. The books stay on this phone.</p>`;
+  if (ui.installEvent) return `<button class="primary" data-action="install-app">Install on this phone</button><p class="footnote">This adds Daybook to your home screen. It does not create an account, and it does not upload the ledger.</p>`;
+  return `<p class="footnote"><b>Install on this phone.</b> Android Chrome: menu, then Install app. iPhone Safari: Share, then Add to Home Screen. After that it opens like an app and keeps working offline.</p>`;
+}
+
 function more() {
   const items = [
     ["#/accounts", "Accounts", "Balances derived from transactions"],
@@ -491,7 +501,7 @@ function more() {
     ["#/help", "How the numbers work", "The formulas, in sentences"],
     ["#/about", "About", `Version ${APP_VERSION}`],
   ];
-  return `<h2 class="page">More</h2>${items.map(([href, title, sub]) => `<button class="choice" data-action="go" data-href="${href}"><b>${title}</b><small>${sub}</small></button>`).join("")}`;
+  return `<h2 class="page">More</h2>${installCard()}${items.map(([href, title, sub]) => `<button class="choice" data-action="go" data-href="${href}"><b>${title}</b><small>${sub}</small></button>`).join("")}`;
 }
 
 function missing() {
@@ -500,7 +510,7 @@ function missing() {
 
 function onboarding() {
   if (ui.step === 1) {
-    return `<div class="screen"><p class="quiet">1 of 3</p><h2 class="page">We'll use rupees.</h2><p class="hero">${money(123456789)}</p><p>22 Sep 2026</p><p class="footnote">Daybook keeps records. It does not move money or give financial advice.</p><button class="primary" data-action="onboard-next">Continue</button><button class="text-btn" data-action="onboard-skip">Skip</button></div>`;
+    return `<div class="screen"><p class="quiet">1 of 3</p><h2 class="page">We'll use rupees.</h2><p class="hero">${money(123456789)}</p><p>22 Sep 2026</p><p class="footnote">Daybook keeps records. It does not move money or give financial advice.</p>${installCard()}<button class="primary" data-action="onboard-next">Continue</button><button class="text-btn" data-action="onboard-skip">Skip</button></div>`;
   }
   if (ui.step === 2) {
     return `<div class="screen"><p class="quiet">2 of 3</p><h2 class="page">When does your month start?</h2><input class="field" id="payday-setup" inputmode="numeric" placeholder="Day, or leave blank" value="${$(ledger.settings.paydayDay || "")}"><p class="footnote">Rent and salary rarely care that the calendar says the 1st. Leave this blank for a calendar month.</p><button class="primary" data-action="onboard-payday">Continue</button><button class="text-btn" data-action="onboard-skip">Skip</button></div>`;
@@ -913,6 +923,7 @@ app.addEventListener("click", async (event) => {
   const action = el.dataset.action;
   const dataId = el.dataset.id;
   if (action === "go") go(el.dataset.href);
+  else if (action === "install-app") installApp();
   else if (action === "add") openAdd();
   else if (action === "close-sheet") closeSheet();
   else if (action === "close-dialog") { ui.dialog = null; render(); }
@@ -1627,6 +1638,24 @@ function doReassign() {
 }
 
 window.addEventListener("hashchange", render);
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  ui.installEvent = event;
+  render();
+});
+window.addEventListener("appinstalled", () => {
+  ui.installEvent = null;
+  render();
+});
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 checkReminders();
 render();
+
+async function installApp() {
+  if (!ui.installEvent) return;
+  ui.installEvent.prompt();
+  const choice = await ui.installEvent.userChoice;
+  ui.installEvent = null;
+  if (choice?.outcome === "accepted") showSnack("Installed. Open Daybook from your home screen.");
+  else render();
+}
