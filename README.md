@@ -10,17 +10,23 @@ python3 -m http.server 4173 --bind 0.0.0.0 --directory web
 
 ## Install on a phone
 
-This is not a Play Store or App Store package. Flutter and the Android SDK are not available here, so Daybook installs from the home screen of the phone's browser. After that it opens like an app and keeps working offline. The ledger stays on that phone. It is not uploaded.
+Open this address on the phone. It is the same Daybook app:
 
-Publishing needs GitHub Pages turned on once. This environment cannot change that setting.
+https://cdn.jsdelivr.net/gh/MrMax3757/Expense-Tracker-Application@arena/01a0c7e1-expense-tracker-application/web/index.html
+
+This is not a Play Store or App Store package. Flutter and the Android SDK are not available here.
+
+1. Android Chrome: open the link, then the browser menu, then **Add to Home screen** or **Install app**.
+2. iPhone Safari: open the link, tap **Share**, then **Add to Home Screen**.
+3. Open Daybook from the new icon.
+
+The ledger stays in that browser. It is not uploaded. This address is a public file host, so it is not a private website of your own. Do not treat it as a bank lock. A home-screen install from your own GitHub Pages address is better once Pages is switched on.
+
+Publishing to GitHub Pages needs one setting this environment cannot change.
 
 1. Open [Pages settings](https://github.com/MrMax3757/Expense-Tracker-Application/settings/pages).
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**. Save.
 3. Re-run the **Publish Daybook** workflow. The phone address is then `https://mrmax3757.github.io/Expense-Tracker-Application/`.
-4. On the phone, open that address in Chrome (Android) or Safari (iPhone).
-5. Android: tap **Install on this phone** if it appears, or open the browser menu and choose **Install app** or **Add to Home screen**.
-6. iPhone: tap **Share**, then **Add to Home Screen**.
-7. Open Daybook from the new icon.
 
 `docs/review/` is an earlier shell study. It is not this app.
 
